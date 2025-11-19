@@ -13,13 +13,32 @@ unKnot :: [(Char, Char)] -> String
 unKnot tripCode
    | null tripCode = "unknot"
    | typeIknot tripCode = unKnot (makeIChange tripCode) -- 15
-   | typeIknotWrap tripCode = unKnot (makeIWrapChange tripCode)
+   | typeIknotWrap tripCode = unKnot (removeWrap tripCode)
    | otherwise = "tangle - resulting trip code: " ++ (show tripCode)
 -- 17
-makeIWrapChange :: [(Char, Char)] -> [(Char, Char)]
-makeIWrapChange tripCode
+-- typeIIknot2 :: [(Char, Char)] -> Char a -> Char b -> Bool
+typeIIknot2 tripCode
+   | null tripCode = False
+   | fst (head tripCode) == a && fst(head (drop 1 tripCode)) == b = True
+   | fst (head tripCode) == b && fst(head (drop 1 tripCode)) == a = True
+   | otherwise = typeIknot (tail tripCode)
+makeIIChange :: [(Char, Char)] -> [(Char, Char)]
+makeIIChange tripCode
+   | null tripCode = []
+   | (fst (head tripCode) /= (fst (head (drop 1 tripCode)))) && (snd (head tripCode) == (snd (head (drop 1 tripCode)))) && typeIIknot2 (drop 2 tripCode) (fst (head tripCode)) (fst (head (drop 1 tripCode))) = makeIIChange2 (drop 2 tripCode) (fst (head tripCode)) (fst (head (drop 1 tripCode)))
+   | otherwise = [head tripCode] ++ (makeIIChange (tail tripCode))
+
+-- makeIIChange2 :: [(Char, Char)] -> Char a -> Char b -> [(Char, Char)]
+makeIIChange2 tripCode a b
+   | null tripCode = []
+   | fst (head tripCode) == a && fst(head (drop 1 tripCode)) == b = makeIIChange2 ( drop 2 tripCode)
+   | fst (head tripCode) == b && fst(head (drop 1 tripCode)) == a = makeIIChange2 ( drop 2 tripCode)
+   | otherwise = [head tripCode] ++ (makeIIChange2 (tail tripCode))
+
+removeWrap :: [(Char, Char)] -> [(Char, Char)]
+removeWrap tripCode
    | listLength tripCode == 2 = []
-   | otherwise = [head (tail tripCode)] ++ makeIWrapChange (tail tripCode)
+   | otherwise = [head (tail tripCode)] ++ removeWrap (tail tripCode)
 
 
 typeIknotWrap :: [(Char, Char)] -> Bool
