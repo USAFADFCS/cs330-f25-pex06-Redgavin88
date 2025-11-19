@@ -3,7 +3,7 @@
 -- 3
 -- name: Gavin Smith
 -- 5
-{- DOCUMENTATION:
+{- DOCUMENTATION: None
 -}
 -- 8
 listLength [] = 0
